@@ -1,0 +1,20 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = "17"
+    modules = [ 'javafx.controls' ]
+}
+
+dependencies {
+    implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
+}
+
+compileJava.options.encoding = 'UTF-8'
+mainClassName = 'Jogo'
