@@ -5,7 +5,7 @@ class Enunciado {
 		this.enunciado = enunciado;
 	}
 
-	public String getEunciado() {
+	public String getEnunciado() {
 		return this.enunciado;
 	}
 }

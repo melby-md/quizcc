@@ -1,3 +1,4 @@
+import java.util.ArrayDeque;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -32,6 +33,21 @@ public class Jogo extends Application {
 		}
 	}
 
+	private void displayPerguntas(ArrayDeque<Pergunta> perguntas,
+				VBox vbox, 
+			        ProgressBar vida1,
+				ProgressBar vida2)
+	{
+		Pergunta pergunta = perguntas.pop();
+		Text txt = new Text(pergunta.getEnunciado());
+		txt.setFont(new Font(30));
+		vbox.getChildren().addAll(txt);
+
+		for (Alternativa a : pergunta.getAlternativas()) {
+		}
+
+	}
+
 	private StackPane jogo() {
 		ProgressBar vida1 = new ProgressBar();
 		ProgressBar vida2 = new ProgressBar();
@@ -51,32 +67,41 @@ public class Jogo extends Application {
 		hbox2.setAlignment(Pos.TOP_RIGHT);
 		VBox vbox = new VBox(5);
 		vbox.setAlignment(Pos.CENTER);
-		try {
+
+		ArrayDeque<Pergunta> perguntas = new ArrayDeque<Pergunta>();	
+		ResultSet ars = null;
+		try (
 			Connection con = DataBase.getCon();
 			Statement stmt = con.createStatement();
-			ResultSet perguntas = stmt.executeQuery("""
+			ResultSet prs = stmt.executeQuery("""
 				SELECT * FROM perguntas	WHERE id IN
 				(SELECT id FROM perguntas
-				 ORDER BY RANDOM() LIMIT 5)
+				 ORDER BY RANDOM() LIMIT 3)
 			""");
-		
-		if (perguntas.next()) {
-			Text pergunta = new Text(perguntas.getString("enunciado"));
-			vbox.getChildren().add(pergunta);
 			PreparedStatement ps = con.prepareStatement("""
 				SELECT enunciado, status
 				FROM alternativas WHERE pergunta_id = ?
 			""");
-			ps.setInt(1, perguntas.getInt("id"));
-			ResultSet alternativas = ps.executeQuery();
-			while (alternativas.next()) {
-				vbox.getChildren().add(new Button(alternativas.getString("enunciado")));
+		) {
+			while (prs.next()) {
+				Pergunta pergunta = new Pergunta(prs.getString("enunciado"));
+				perguntas.add(pergunta);
+
+				ps.setInt(1, prs.getInt("id"));
+				ars = ps.executeQuery();
+				while (ars.next()) {
+					Alternativa alternativa = new Alternativa(
+						ars.getString("enunciado"),
+						ars.getBoolean("status")
+					);
+					pergunta.addAlternativa(alternativa);
+				}
 			}
-		}
+			displayPerguntas(perguntas, vbox, vida1, vida2);
 		} catch (SQLException e) {
 			System.err.println("Erro SQL: " + e.getMessage());
 			System.exit(1);
-		} 
+		}
 		return new StackPane(hbox1, hbox2, vbox);
 	}
 
@@ -118,6 +143,7 @@ public class Jogo extends Application {
 
 		Text titulo = new Text("Quiz CC");
 		titulo.setFont(new Font(50));
+		titulo.setStyle("-fx-text-fill: #ff0000");
 
 		Text subtitulo = new Text("(CC significa Ciência da Computação)");
 		subtitulo.setFont(new Font(30));

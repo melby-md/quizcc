@@ -1,10 +1,22 @@
-Porque a galinha atravessou a rua?
- :para chegar do outro lado
- para ir no banco
- não sei mano
+Qual alternativa apresenta todas estruturas de loop no Java?
+ if/else, while
+ try/catch, class, if/else
+ for, while
+ :for, while, do/while 
 
-Quantas pessoas são necessárias para trocar uma lâmpada?
- 7
- :1
- 9
- 2
+O que pode acessar um campo private de um objeto?
+ :Objetos da mesma classe
+ Apenas o próprio objeto
+ Objetos da mesma classe e de classes herdadas
+
+A sobrecarga (overloading) de método é a habilidade de criar...
+ Metodos na subclasse que sobrescrevem os herdados da classe pai
+ Funções lambda (anônimas)
+ :Métodos com implemetação e assinatura diferente mas com o mesmo nome
+ Funções que conseguem receber outras funções como argumento
+
+O que é um método estático (static)?
+ :Um método que é idependente das instâncias da classe
+ Um método que consegue receber um número arbitrário de parâmetros
+ Um método que pode ser compartilhado entre classes
+
