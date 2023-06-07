@@ -103,9 +103,9 @@ public class Jogo extends Application {
 		});
 
 		botoes.getChildren().clear();
-		char letra = 'a';
+		byte letra = 0;
 		for (Alternativa a : pergunta.getAlternativas()) {
-			Button btn = new Button(letra + ") " + a.getEnunciado());
+			Button btn = new Button((char)('a' + letra) + ") " + a.getEnunciado());
 			btn.setOnAction(e -> {
 				Personagem p = player1.getStatus() ? player1 : player2;
 				p.setResposta(a);
@@ -118,7 +118,7 @@ public class Jogo extends Application {
 				player1.toggleStatus();
 				player2.toggleStatus();
 			});
-			letra = (char)((letra -97 +1) % 26 +97);
+			letra = (byte)((letra + 1) % 26);
 			botoes.getChildren().add(btn);
 		}
 	}
