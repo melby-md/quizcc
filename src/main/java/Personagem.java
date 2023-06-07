@@ -1,5 +1,6 @@
 class Personagem {
 	private String nome;
+	private Alternativa resposta;
 	private double vida = 1;
 	private boolean status;
 
@@ -19,13 +20,20 @@ class Personagem {
 		return this.status;
 	}
 
+	public void setResposta(Alternativa resposta) {
+		this.resposta = resposta;
+	}
+
+	public Alternativa getResposta() {
+		return this.resposta;
+	}
+
 	public void toggleStatus() {
 		this.status = !this.status;
 	}
 
-	public boolean subVida(double dano) {
+	public void subVida(double dano) {
 		this.vida -= dano;
-		return this.vida <= 0;
 	}
 
 	public void setStatus(boolean status) {
