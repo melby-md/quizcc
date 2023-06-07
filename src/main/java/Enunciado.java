@@ -1,5 +1,5 @@
 class Enunciado {
-	protected final String enunciado;
+	private final String enunciado;
 
 	public Enunciado(String enunciado) {
 		this.enunciado = enunciado;

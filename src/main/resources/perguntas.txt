@@ -1,4 +1,4 @@
-Qual alternativa apresenta todas estruturas de loop no Java?
+Qual alternativa apresenta todas estruturas de loop?
  if/else, while
  try/catch, class, if/else
  for, while
@@ -12,11 +12,36 @@ O que pode acessar um campo private de um objeto?
 A sobrecarga (overloading) de método é a habilidade de criar...
  Metodos na subclasse que sobrescrevem os herdados da classe pai
  Funções lambda (anônimas)
- :Métodos com implemetação e assinatura diferente mas com o mesmo nome
+ :Métodos com implemetação e assinatura diferentes mas com o mesmo nome
  Funções que conseguem receber outras funções como argumento
 
 O que é um método estático (static)?
  :Um método que é idependente das instâncias da classe
  Um método que consegue receber um número arbitrário de parâmetros
  Um método que pode ser compartilhado entre classes
+
+Qual palavra chave cria uma variavel que só pode ser atribuida uma vez?
+ const
+ restrict
+ volatile
+ :final
+ let
+
+Qual palavra chave cria um objeto?
+ class
+ :new
+ throw
+ Object
+ extends
+
+Qual declaração aseguir cria um array list de número inteiros?
+ :List<Integer> l = new ArrayList<>()
+ int[] l = new int[5]
+ Arraylist<Integer> l = new Arraylist<>()
+
+Qual palavra chave sobrescreve um método?
+ Overload
+ Extends
+ :Override
+ Overwrite
 

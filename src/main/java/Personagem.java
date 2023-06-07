@@ -1,7 +1,7 @@
 class Personagem {
 	private String nome;
-	private int vida = 100;
-	private boolean status = false;
+	private double vida = 1;
+	private boolean status;
 
 	public Personagem(String nome) {
 		this.nome = nome;
@@ -11,7 +11,7 @@ class Personagem {
 		return this.nome;
 	}
 
-	public int getVida() {
+	public double getVida() {
 		return this.vida;
 	}
 
@@ -19,7 +19,11 @@ class Personagem {
 		return this.status;
 	}
 
-	public boolean subVida(int dano) {
+	public void toggleStatus() {
+		this.status = !this.status;
+	}
+
+	public boolean subVida(double dano) {
 		this.vida -= dano;
 		return this.vida <= 0;
 	}
