@@ -6,6 +6,7 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
@@ -180,27 +181,52 @@ public class Jogo extends Application {
 	private BorderPane jogo() {
 		ProgressBar vida1 = new ProgressBar();
 		ProgressBar vida2 = new ProgressBar();
-		HBox.setHgrow(vida1, Priority.ALWAYS);
-		HBox.setHgrow(vida2, Priority.ALWAYS);
+
 		vida1.setProgress(1);
 		vida2.setProgress(1);
 
+		GridPane.setHgrow(vida1, Priority.ALWAYS);
+		GridPane.setHgrow(vida2, Priority.ALWAYS);
+
+		GridPane.setHalignment(vida1, HPos.CENTER);
+		GridPane.setHalignment(vida2, HPos.CENTER);
+
+		ImageView img1 = new ImageView(player1.getNome().toLowerCase() + ".jpg");
+		ImageView img2 = new ImageView(player2.getNome().toLowerCase() + ".jpg");
+
+		img1.setFitHeight(80);
+		img1.setFitWidth(80);
+
+		img2.setFitHeight(80);
+		img2.setFitWidth(80);
+
+		GridPane.setMargin(img1, new Insets(0, 10, 10, 10));
+		GridPane.setMargin(img2, new Insets(0, 10, 10, 10));
+
+		Text nome1 = new Text(player1.getNome());
+		Text nome2 = new Text(player2.getNome());
+
+		GridPane.setHalignment(nome1, HPos.LEFT);
+		GridPane.setHalignment(nome2, HPos.RIGHT);
+
 		Text rodada = new Text("Vez do jogador 1");
+		GridPane.setHalignment(rodada, HPos.CENTER);
 
-		HBox hbox = new HBox(
-			5,
-			new Text(player1.getNome()),
-			vida1,
-			vida2,
-			new Text(player2.getNome())
-		);
-		hbox.setAlignment(Pos.TOP_CENTER);
+		GridPane topo = new GridPane();
+		BorderPane.setMargin(topo, new Insets(10, 0, 0, 0));
 
-		VBox topo = new VBox(hbox, rodada);
-		topo.setAlignment(Pos.TOP_CENTER);
-		topo.setPadding(new Insets(15));
+		topo.add(img1, 0, 0, 1, 2);
+		topo.add(img2, 3, 0, 1, 2);
 
-		ReadOnlyDoubleProperty tamanho = hbox.widthProperty();
+		topo.add(nome1, 1, 0);
+		topo.add(nome2, 2, 0);
+
+		topo.add(vida1, 1, 1);
+		topo.add(vida2, 2, 1);
+
+		topo.add(rodada, 0, 2, 4, 1);
+
+		ReadOnlyDoubleProperty tamanho = topo.widthProperty();
 		vida1.prefWidthProperty().bind(tamanho);
 		vida2.prefWidthProperty().bind(tamanho);
 
@@ -272,10 +298,17 @@ public class Jogo extends Application {
 		return borderPane;
 	}
 
+	private Button botaoPersonagem(String nome) {
+		ImageView img = new ImageView(nome.toLowerCase() + ".jpg");
+		Button b = new Button(nome, img);
+		b.setContentDisplay(ContentDisplay.TOP);
+		return b;
+	}
+
 	private BorderPane telaDeSelecao() {
-		Button personagem1 = new Button("Evandro");
-		Button personagem2 = new Button("Jorge");
-		Button personagem3 = new Button("Agnaldo");
+		Button personagem1 = botaoPersonagem("Evandro");
+		Button personagem2 = botaoPersonagem("Jorge");
+		Button personagem3 = botaoPersonagem("Agnaldo");
 
 		Text titulo = new Text("Escolha o primeiro personagem");
 		titulo.setFont(new Font(25));
@@ -321,8 +354,8 @@ public class Jogo extends Application {
 		titulo.setFont(new Font(50));
 		titulo.setFill(Color.RED);
 
-		Text subtitulo = new Text("(CC significa Ciência da Computação)");
-		subtitulo.setFont(new Font(30));
+		Text subTitulo = new Text("(CC significa Ciência da Computação)");
+		subTitulo.setFont(new Font(30));
 
 		Button novoJogo = new Button("Novo Jogo");
 		Button comoJogar = new Button("Como Jogar");
@@ -330,15 +363,17 @@ public class Jogo extends Application {
 		Button sair = new Button("Sair");
 
 		VBox telaPrincipal = new VBox(
-			15,
+			5,
 			titulo,
-			subtitulo,
+			subTitulo,
 			novoJogo,
 			comoJogar,
 			creditos,
 			sair
 		);
 		telaPrincipal.setAlignment(Pos.CENTER);
+
+		telaPrincipal.setMargin(subTitulo, new Insets(0, 0, 25, 0));
 
 		for (Node n : telaPrincipal.getChildren())
 			if (n instanceof Button) 
