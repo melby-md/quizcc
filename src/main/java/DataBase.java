@@ -5,7 +5,7 @@ import java.sql.*;
 class DataBase {
 	private static Connection con;
 
-	public static void connect() throws SQLException {
+	private static void connect() throws SQLException {
 		con = DriverManager.getConnection("jdbc:sqlite:quizcc.sqlite3");
 
 		// Cria as tabelas necessárias caso o banco seja recem-criado
@@ -77,7 +77,9 @@ class DataBase {
 		stmt.close();
 	}
 
-	public static Connection getCon() {
+	public static Connection getCon() throws SQLException {
+		if (con == null)
+			connect();
 		return con;
 	}
 

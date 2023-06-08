@@ -304,8 +304,6 @@ public class Jogo extends Application {
 	// Esse método tem que ser público
 	@Override
 	public void start(Stage stage) throws SQLException {
-		DataBase.connect();
-
 		stage.setTitle("quizcc");
 		stage.setMaximized(true);
 
