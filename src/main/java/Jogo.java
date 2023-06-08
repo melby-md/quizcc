@@ -33,6 +33,7 @@ public class Jogo extends Application {
 	}
 
 	private static final EventType<Event> TELA_INICIAL = new EventType<>("TELA_INICIAL");
+	private static final EventType<Event> FIM = new EventType<>("FIM");
 
 	private Personagem player1, player2;
 
@@ -84,7 +85,7 @@ public class Jogo extends Application {
 								  ProgressBar vida2)
 	{
 		if (perguntas.isEmpty()) {
-			botoes.getScene().setRoot(fim());
+			vbox.fireEvent(new Event(FIM));
 			return;
 		}
 
@@ -111,17 +112,19 @@ public class Jogo extends Application {
 			if (!status1) {
 				player1.subVida(0.1);
 				if (player1.getVida() <= 0)
-					vbox.getScene().setRoot(fim());
+					vbox.fireEvent(new Event(FIM));
 			}
 			if (!status2) {
 				player2.subVida(0.1);
 				if (player1.getVida() <= 0)
-					vbox.getScene().setRoot(fim());
+					vbox.fireEvent(new Event(FIM));
 			}
 
 			String msg;
 			if (!status1 && !status2)
 				msg = "Ambos os jogadores erraram!";
+			else if (status1 && status2)
+				msg = "Ambos os jogadores acertaram!";
 			else
 				msg = "Jogador " + (status1 ? 1 : 2) + " acertou!";
 			sim.fireEvent(new MsgEvent(msg));
@@ -188,12 +191,14 @@ public class Jogo extends Application {
 			5,
 			new Text(player1.getNome()),
 			vida1,
-			rodada,
 			vida2,
 			new Text(player2.getNome())
 		);
 		hbox.setAlignment(Pos.TOP_CENTER);
-		hbox.setPadding(new Insets(15));
+
+		VBox topo = new VBox(hbox, rodada);
+		topo.setAlignment(Pos.TOP_CENTER);
+		topo.setPadding(new Insets(15));
 
 		ReadOnlyDoubleProperty tamanho = hbox.widthProperty();
 		vida1.prefWidthProperty().bind(tamanho);
@@ -248,7 +253,7 @@ public class Jogo extends Application {
 		displayPerguntas(perguntas, vbox, botoes, enunciado, vida1, vida2);
 
 		BorderPane borderPane = new BorderPane();
-		borderPane.setTop(hbox);
+		borderPane.setTop(topo);
 		borderPane.setCenter(vbox);
 
 		borderPane.addEventHandler(MsgEvent.ALTERA_MSG, e -> {
@@ -257,6 +262,11 @@ public class Jogo extends Application {
 				msg = "Vez do jogador " + (player1.getStatus() ? 1 : 2);
 			}
 			rodada.setText(msg);
+		});
+
+		borderPane.addEventHandler(FIM, e -> {
+			borderPane.fireEvent(new MsgEvent("Fim de jogo!"));
+			borderPane.setCenter(fim());
 		});
 
 		return borderPane;
