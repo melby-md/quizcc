@@ -1,11 +1,11 @@
 class Personagem {
-	private String nome;
+	private String nome = null;
 	private Alternativa resposta;
 	private double vida = 1;
 	private boolean status;
 
-	public Personagem(String nome) {
-		this.nome = nome;
+	public Personagem(boolean status) {
+		this.status = status;
 	}
 
 	public String getNome() {
@@ -20,23 +20,23 @@ class Personagem {
 		return this.status;
 	}
 
+	public Alternativa getResposta() {
+		return this.resposta;
+	}
+
 	public void setResposta(Alternativa resposta) {
 		this.resposta = resposta;
 	}
 
-	public Alternativa getResposta() {
-		return this.resposta;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public void toggleStatus() {
 		this.status = !this.status;
 	}
 
-	public void subVida(double dano) {
-		this.vida -= dano;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
+	public void dano() {
+		this.vida -= 0.1;
 	}
 }

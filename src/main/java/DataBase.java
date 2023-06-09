@@ -1,55 +1,70 @@
 import java.io.*;
 import java.sql.*;
+import java.util.ArrayDeque;
 
-// Essa classe é só uma variavel global glorificada
+// Essa classe é só uma variavel global glorificada e algumas funções
 class DataBase {
 	private static Connection con;
 
-	private static void connect() throws SQLException {
-		con = DriverManager.getConnection("jdbc:sqlite:quizcc.sqlite3");
+	public static void connect() throws SQLException {
+		try {
+			con = DriverManager.getConnection("jdbc:sqlite:quizcc.sqlite3");
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			close();
+			System.exit(1);
+		}
 
-		// Cria as tabelas necessárias caso o banco seja recem-criado
-		Statement stmt = con.createStatement();
+		try (
+			// Cria as tabelas necessárias caso o banco seja recem-criado
+			Statement stmt = con.createStatement();
 
-		// Essa query é longa e ultrapassa 80 colunas, por isso quebrar
-		// ela em várias linhas, o java suporta esse tipo de string des
-		// do 15, mas, alguns editores ainda não fazem o syntax hilight
-		// direito, incluindo o meu :P
-		//
-		// Essa query usa uma funão específica do sqlite para listar
-		// todas as tabelas
-		ResultSet rs = stmt.executeQuery("""
-			SELECT name
-			FROM sqlite_master
-			WHERE type='table'
-		""");
+			// Essa query é longa e ultrapassa 80 colunas, por isso quebrar
+			// ela em várias linhas, o java suporta esse tipo de string des
+			// do 15, mas, alguns editores ainda não fazem o syntax hilight
+			// direito, incluindo o meu :P
+			//
+			// Essa query usa uma funão específica do sqlite para listar
+			// todas as tabelas
+			ResultSet rs = stmt.executeQuery("""
+				SELECT name
+				FROM sqlite_master
+				WHERE type='table'
+			""");
+		) {
+
+			if (rs.next())
+				return;
+
+			// Caso não aja tabelas...
+			stmt.executeUpdate("""
+				CREATE TABLE perguntas (
+					id INTEGER PRIMARY KEY,
+					enunciado TEXT
+				)
+			""");
+
+			stmt.executeUpdate("""
+				CREATE TABLE alternativas (
+					id INTEGER PRIMARY KEY,
+					enunciado TEXT,
+					status INTEGER,
+					pergunta_id INTEGER,
+					FOREIGN KEY(pergunta_id) 
+					REFERENCES perguntas(id)
+				)
+			""");
+		} catch (Exception e) {
+			System.err.println("Erro SQL: " + e.getMessage());
+			System.exit(1);
+		}
 		
-		if (rs.next())
-			return;
-
-		// Caso não aja tabelas...
-		stmt.executeUpdate("""
-			CREATE TABLE perguntas (
-				id INTEGER PRIMARY KEY,
-				enunciado TEXT
-			)
-		""");
-		stmt.executeUpdate("""
-			CREATE TABLE alternativas (
-				id INTEGER PRIMARY KEY,
-				enunciado TEXT,
-				status INTEGER,
-				pergunta_id INTEGER,
-				FOREIGN KEY(pergunta_id) 
-				REFERENCES perguntas(id)
-			)
-		""");
-
-		try (InputStream file = 
-		     DataBase.class.getResourceAsStream("perguntas.txt");
-		     BufferedReader br = 
-		     new BufferedReader(new InputStreamReader(file, "UTF-8"))) {
-
+		try (
+			InputStream file = 
+			DataBase.class.getResourceAsStream("perguntas.txt");
+			BufferedReader br = 
+			new BufferedReader(new InputStreamReader(file, "UTF-8"))
+		) {
 			int id = 0;
 			for (String line = br.readLine(); line != null; line = br.readLine()) {
 				if (line.startsWith(" ")) {
@@ -70,21 +85,60 @@ class DataBase {
 				}
 			}
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			System.err.println("Erro SQL: " + e.getMessage());
 			System.exit(1);
 		}
-		rs.close();
-		stmt.close();
 	}
 
-	public static Connection getCon() throws SQLException {
-		if (con == null)
-			connect();
+	public static ArrayDeque<Pergunta> fetchPerguntas() {
+		ArrayDeque<Pergunta> perguntas = new ArrayDeque<>();	
+
+		try (
+			Connection con = DataBase.getCon();
+			Statement stmt = con.createStatement();
+			ResultSet prs = stmt.executeQuery("""
+				SELECT * FROM perguntas	ORDER BY RANDOM()
+			""");
+			PreparedStatement ps = con.prepareStatement("""
+				SELECT enunciado, status
+				FROM alternativas
+				WHERE pergunta_id = ?
+				ORDER BY RANDOM()
+			""");
+		) {
+			while (prs.next()) {
+				Pergunta pergunta = new Pergunta(prs.getString("enunciado"));
+				perguntas.add(pergunta);
+
+				ps.setInt(1, prs.getInt("id"));
+				try (
+					ResultSet ars = ps.executeQuery();
+				) {
+					while (ars.next()) {
+						Alternativa alternativa = new Alternativa(
+							ars.getString("enunciado"),
+							ars.getBoolean("status")
+						);
+						pergunta.addAlternativa(alternativa);
+					}
+				}
+	   		}
+		} catch (SQLException e) {
+			System.err.println("Erro SQL: " + e.getMessage());
+			System.exit(1);
+		}
+
+		return perguntas;
+	}
+
+	public static Connection getCon() {
 		return con;
 	}
 
-	public static void close() throws SQLException {
+	public static void close() {
 		if (con != null)
-			con.close();
+			try {
+				con.close();
+			} catch (SQLException e) {}
 	}
 }
