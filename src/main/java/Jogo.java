@@ -1,7 +1,9 @@
-import java.util.ArrayDeque;
+import java.io.*;
 import java.sql.*;
+import java.util.ArrayDeque;
+import java.util.regex.*;
 
-import javafx.application.Application;
+import javafx.application.*;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.geometry.*;
 import javafx.scene.*;
@@ -34,6 +36,14 @@ public class Jogo extends Application {
 
 	private static final EventType<Event> TELA_INICIAL = new EventType<>("TELA_INICIAL");
 
+	public static Button botaoVoltar() {
+		Button voltar = new Button("Voltar");
+		voltar.setCancelButton(true);
+		voltar.setOnAction(e -> voltar.fireEvent(new Event(TELA_INICIAL)));
+
+		return voltar;
+	}
+
 	private BorderPane fim(Personagem player1, Personagem player2) {
 		String s;
 		if (player1.getVida() == player2.getVida())
@@ -46,8 +56,7 @@ public class Jogo extends Application {
 		Text txt = new Text(s);
 		txt.setFont(new Font(50));
 
-		Button voltar = new Button("Voltar");
-		voltar.setOnAction(e -> voltar.fireEvent(new Event(TELA_INICIAL)));
+		Button voltar = botaoVoltar();
 		BorderPane.setMargin(voltar, new Insets(15));
 
 		BorderPane borderPane = new BorderPane();
@@ -142,10 +151,8 @@ public class Jogo extends Application {
 
 		borderPane.addEventHandler(UPDATE_MSG, e -> {
 			String msg = e.getMsg();
-			if (msg == null) {
-				System.out.printf("1: %b%n2: %b%n", player1.getStatus(), player2.getStatus());
+			if (msg == null)
 				msg = "Vez de " + (player1.getStatus() ? player1 : player2).getNome();
-			}
 			rodada.setText(msg);
 		});
 
@@ -171,8 +178,6 @@ public class Jogo extends Application {
 
 					player1.toggleStatus();
 					player2.toggleStatus();
-
-					System.out.println(p.getNome());
 
 					if (p == player2) {
 						vbox.getChildren().add(confirmacao);
@@ -294,9 +299,7 @@ public class Jogo extends Application {
 		);
 		vbox.setAlignment(Pos.CENTER);
 
-		Button voltar = new Button("Voltar");
-		voltar.setCancelButton(true);
-		voltar.setOnAction(e -> voltar.fireEvent(new Event(TELA_INICIAL)));
+		Button voltar = botaoVoltar();
 		BorderPane.setMargin(voltar, new Insets(15));
 
 		BorderPane borderPane = new BorderPane();
@@ -308,7 +311,7 @@ public class Jogo extends Application {
 
 	// Esse método tem que ser público
 	@Override
-	public void start(Stage stage) throws SQLException {
+	public void start(Stage stage) {
 		DataBase.connect();
 
 		stage.setTitle("quizcc");
@@ -351,11 +354,23 @@ public class Jogo extends Application {
 			scene.setRoot(telaDeSelecao())
 		);
 
+		creditos.setOnAction(e ->
+			scene.setRoot(new MDRenderer("creditos.md"))
+		);
+
+		sair.setOnAction(e -> Platform.exit());
+
 		stage.setScene(scene);
 		stage.show();
 	}
 
+	// Esse também
+	@Override
+	public void stop() {
+		DataBase.close();
+	}
+
 	public static void main(String[] args) {
-			launch(args);
+		launch(args);
 	}
 }

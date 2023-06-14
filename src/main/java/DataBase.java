@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 class DataBase {
 	private static Connection con;
 
-	public static void connect() throws SQLException {
+	public static void connect() {
 		try {
 			con = DriverManager.getConnection("jdbc:sqlite:quizcc.sqlite3");
 		} catch (SQLException e) {
