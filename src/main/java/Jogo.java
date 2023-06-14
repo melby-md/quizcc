@@ -17,6 +17,8 @@ import javafx.event.*;
 
 public class Jogo extends Application {
 
+	// Essa classe é um wrapper para que nodes possam enviar uma string junto
+	// com um evento para outro node.
 	private static class MsgEvent extends Event {
 		private String msg = null;
 
@@ -73,6 +75,8 @@ public class Jogo extends Application {
 
 		ProgressBar vida1 = new ProgressBar(1);
 		ProgressBar vida2 = new ProgressBar(1);
+
+		// inverte uma das barras de vida para ficar que nem um jogo de luta
 		vida2.setScaleX(-1);
 
 		GridPane.setHgrow(vida1, Priority.ALWAYS);
@@ -105,6 +109,7 @@ public class Jogo extends Application {
 		GridPane topo = new GridPane();
 		BorderPane.setMargin(topo, new Insets(10, 0, 0, 0));
 
+		// coordenadas esotéricas
 		topo.add(img1, 0, 0, 1, 2);
 		topo.add(img2, 3, 0, 1, 2);
 
@@ -133,6 +138,7 @@ public class Jogo extends Application {
 		borderPane.setTop(topo);
 		borderPane.setCenter(vbox);
 
+		// Os elementos criado abaixo são adicionados posteriormente na tela
 		Button sim = new Button("sim");
 		Button nao = new Button("nao");
 		HBox hbox = new HBox(20, sim, nao);
@@ -143,6 +149,8 @@ public class Jogo extends Application {
 		Button next = new Button("Próxima pergunta");
 
 		ArrayDeque<Pergunta> perguntas = DataBase.fetchPerguntas();
+
+		// CALLBACKS PARA A FAMÍLIA INTEIRA
 
 		borderPane.addEventHandler(FIM, e -> {
 			borderPane.fireEvent(new MsgEvent(UPDATE_MSG, "Fim de jogo!"));
@@ -170,7 +178,7 @@ public class Jogo extends Application {
 			botoes.getChildren().clear();
 			for (Alternativa a : pergunta.getAlternativas()) {
 				Button btn = new Button((char)('a' + letra) + ") " + a.getEnunciado());
-				btn.setMinWidth(500);
+				btn.setMinWidth(700);
 				btn.setOnAction(f -> {
 					Personagem p = player1.getStatus() ? player1 : player2;
 					p.setResposta(a);
@@ -195,15 +203,19 @@ public class Jogo extends Application {
 
 				if (!status1) {
 					player1.dano();
-					if (player1.getVida() <= 0)
+					if (player1.getVida() <= 0) {
 						sim.fireEvent(new Event(FIM));
+						return;
+					}
 					vida1.setProgress(player1.getVida());
 				}
 
 				if (!status2) {
 					player2.dano();
-					if (player2.getVida() <= 0)
+					if (player2.getVida() <= 0) {
 						sim.fireEvent(new Event(FIM));
+						return;
+					}
 					vida2.setProgress(player2.getVida());
 				}
 
@@ -309,13 +321,21 @@ public class Jogo extends Application {
 		return borderPane;
 	}
 
+	private Button botaoMenu(String text) {
+			Button b = new Button(text);
+			b.setMinWidth(150);
+			return b;
+	}
+
 	// Esse método tem que ser público
 	@Override
 	public void start(Stage stage) {
 		DataBase.connect();
 
 		stage.setTitle("quizcc");
-		stage.setMaximized(true);
+		stage.setFullScreen(true);
+		// muda o ícone na barra de tarefas
+		stage.getIcons().add(new Image("jorge.jpg"));
 
 		Text titulo = new Text("Quiz CC");
 		titulo.setFont(new Font(50));
@@ -324,10 +344,10 @@ public class Jogo extends Application {
 		Text subTitulo = new Text("(CC significa Ciência da Computação)");
 		subTitulo.setFont(new Font(30));
 
-		Button novoJogo = new Button("Novo Jogo");
-		Button comoJogar = new Button("Como Jogar");
-		Button creditos = new Button("Créditos");
-		Button sair = new Button("Sair");
+		Button novoJogo = botaoMenu("Novo Jogo");
+		Button comoJogar = botaoMenu("Como Jogar");
+		Button creditos = botaoMenu("Créditos");
+		Button sair = botaoMenu("Sair");
 
 		VBox telaPrincipal = new VBox(
 			5,
@@ -341,10 +361,6 @@ public class Jogo extends Application {
 		telaPrincipal.setAlignment(Pos.CENTER);
 
 		telaPrincipal.setMargin(subTitulo, new Insets(0, 0, 25, 0));
-
-		for (Node n : telaPrincipal.getChildren())
-			if (n instanceof Button) 
-				((Button)n).setMinWidth(150);
 
 		Scene scene = new Scene(telaPrincipal);
 		scene.getStylesheets().add("style.css");
