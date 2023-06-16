@@ -35,13 +35,51 @@ Qual palavra chave cria um objeto?
  extends
 
 Qual declaração aseguir cria um array list de número inteiros?
- :List<Integer> l = new ArrayList<>()
- int[] l = new int[5]
- Arraylist<Integer> l = new Arraylist<>()
+ :List<Integer> l = new ArrayList<>();
+ int[] l = new int[5];
+ Arraylist<Integer> l = new Arraylist<>();
 
 Qual palavra chave sobrescreve um método?
  Overload
  Extends
  :Override
  Overwrite
+
+Um loop while executa no mínimo uma vez idependente da condicional
+ verdadeiro
+ :falso
+ depende
+
+Qual declaração abaixo está correta para um caractere?
+ char a = "a";
+ :char a;
+ String a = 'a';
+ :Character a = 'a';
+
+Strings são mutaveis?
+ sim
+ :não
+ só se for declarada como um atributo de uma classe
+
+Qual classe é super classe de todas outras classes
+ nenhuma
+ super
+ :Object
+
+Qual palavra chave cria uma exceção (exception)?
+ raise
+ :throw
+ throws
+
+Qual o resultado da expressão "2 ^ 2"?
+ 4
+ :0
+ 1
+ expressão inválida 
+
+Qual o resultado da expressão "5 / 2"?
+ 2.5
+ :2
+ 0.4
+ expressão inválida 
 
