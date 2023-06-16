@@ -131,6 +131,9 @@ setFitToWidth(true);
 			System.exit(1);	
 		}
 
+		for (Token t : tokens)
+			System.out.printf("%d: %s%n", t.getType(), t.getContent().replace("\n", "\\\\n"));
+
 		TextFlow tf = new TextFlow();
 		tf.setMaxWidth(800);
 

@@ -15,14 +15,14 @@ digraph g {
 
 	Jogo [label="{Jogo||}"]
 	MDRenderer [label="{MDRenderer||}"]
-	DataBase [label="{DataBase||}"]
+	DataBase [label="{DataBase|+ con: Connection\l|+ connect(): void\l+ close(): void\l}"]
 
 	Enunciado [label="{Enunciado|+ enunciado: string|}"]
 	Alternativa [label="{Alternativa|+ status: boolean|}"]
 	Pergunta [label="{Pergunta||}"]
 
 	Personagem [
-		label = "{Personagem|+ nome: string\l+ vida: double = 1\l+ status: boolean\l|+ toogleStatus(): void\l+ dano(): void\l}"]
+		label = "{Personagem|+ nome: string\l+ vida: double = 1\l+ status: boolean\l|+ toggleStatus(): void\l+ dano(): void\l}"]
 
 	edge [arrowhead = "empty"]
 	Alternativa -> Enunciado
@@ -34,8 +34,6 @@ digraph g {
 
 	edge [arrowhead = "open", style="dashed"]
 	Jogo -> MDRenderer
-	Jogo -> DataBase
+	Jogo -> DataBase -> Pergunta
 	Jogo -> Personagem
-	Jogo -> Pergunta
-	DataBase -> Pergunta
 }
