@@ -41,10 +41,8 @@ class DataBase {
 				CREATE TABLE perguntas (
 					id INTEGER PRIMARY KEY,
 					enunciado TEXT
-				)
-			""");
+				);
 
-			stmt.executeUpdate("""
 				CREATE TABLE alternativas (
 					id INTEGER PRIMARY KEY,
 					enunciado TEXT,
@@ -52,7 +50,7 @@ class DataBase {
 					pergunta_id INTEGER,
 					FOREIGN KEY(pergunta_id) 
 					REFERENCES perguntas(id)
-				)
+				);
 			""");
 		} catch (Exception e) {
 			System.err.println("Erro SQL: " + e.getMessage());
