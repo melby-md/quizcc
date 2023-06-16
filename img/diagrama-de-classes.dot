@@ -1,0 +1,41 @@
+digraph g {
+	fontname = "Sans-Serif"
+	fontsize = 8
+
+	node [
+		fontname = "Sans-Serif"
+		fontsize = 8
+		shape = "record"
+	]
+
+	edge [
+		fontname = "Sans-Serif"
+		fontsize = 8
+	]
+
+	Jogo [label="{Jogo||}"]
+	MDRenderer [label="{MDRenderer||}"]
+	DataBase [label="{DataBase||}"]
+
+	Enunciado [label="{Enunciado|+ enunciado: string|}"]
+	Alternativa [label="{Alternativa|+ status: boolean|}"]
+	Pergunta [label="{Pergunta||}"]
+
+	Personagem [
+		label = "{Personagem|+ nome: string\l+ vida: double = 1\l+ status: boolean\l|+ toogleStatus(): void\l+ dano(): void\l}"]
+
+	edge [arrowhead = "empty"]
+	Alternativa -> Enunciado
+	Pergunta -> Enunciado
+
+	Alternativa -> Pergunta [arrowhead="diamond", taillabel="3..*", headlabel="1"]
+
+	Personagem -> Alternativa [arrowhead = "none", taillabel="1", headlabel="1"]
+
+	edge [arrowhead = "open", style="dashed"]
+	Jogo -> MDRenderer
+	Jogo -> DataBase
+	Jogo -> Personagem
+	Jogo -> Pergunta
+	DataBase -> Pergunta
+}

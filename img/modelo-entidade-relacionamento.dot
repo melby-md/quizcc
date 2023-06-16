@@ -1,0 +1,35 @@
+graph g {
+	fontname = "Sans-Serif"
+	fontsize = 8
+
+	node [
+		fontname = "Sans-Serif"
+		fontsize = 8
+		shape = "record"
+	]
+
+	edge [
+		fontname = "Sans-Serif"
+		fontsize = 8
+	]
+
+	pergunta_enunciado [shape="point", xlabel="enunciado", fillcolor="white"]
+	pergunta_id [shape="point", xlabel="id"]
+
+	tem [shape="diamond"]
+
+	status [shape="point", xlabel="status", fillcolor="white"]
+	alternativa_enunciado [shape="point", xlabel="enunciado", fillcolor="white"]
+	alternativa_id [shape="point", xlabel="id"]
+
+	perguntas -- pergunta_enunciado
+	perguntas -- pergunta_id
+
+	perguntas -- tem [taillabel="1"]
+	tem -- alternativas [taillabel="n"]
+
+	alternativas -- alternativa_id
+	alternativas -- alternativa_enunciado
+	alternativas -- status
+
+}
