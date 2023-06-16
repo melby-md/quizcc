@@ -374,6 +374,10 @@ public class Jogo extends Application {
 			scene.setRoot(new MDRenderer("creditos.md"))
 		);
 
+		comoJogar.setOnAction(e ->
+			scene.setRoot(new MDRenderer("como_jogar.md"))
+		);
+
 		sair.setOnAction(e -> Platform.exit());
 
 		stage.setScene(scene);

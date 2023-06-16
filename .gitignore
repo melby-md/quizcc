@@ -16,6 +16,7 @@ gradle/
 
 quizcc.sqlite3
 .DS_Store
+*.sql
 
 # Arquivos temporários/de swap do vim
 *~
